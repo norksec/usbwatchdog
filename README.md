@@ -20,7 +20,7 @@ pip3 install xxtea pyudev pyfiglet
 
 #Usage
 
-python3 usbwatchdog.py -e <file containing names of files to encrypt> | -d <file containing names of files to decrypt>
+python3 usbwatchdog.py -e (file containing names of files to encrypt) | -d (file containing names of files to decrypt)
 
 #About
 
