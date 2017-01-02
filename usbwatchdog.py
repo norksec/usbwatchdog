@@ -23,7 +23,7 @@ def cls():
 
 def panicButton():
 	subprocess.call("sdmem -llf", shell="TRUE")
-	os.popen("reboot")
+	os.popen("shutdown -h now")
 
 
 def encryptFile(fname, key):
