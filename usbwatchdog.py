@@ -65,7 +65,7 @@ def passPrompt():
 				return True
 
 
-def watchdog(encFlag):
+def watchdog(encFlag, nukeFlag):
 	print(' [+] Starting usbWatchdog...')
 	context = pyudev.Context()
 
@@ -102,6 +102,21 @@ def watchdog(encFlag):
 			print(' [+] Finished encrypting file list.')
 			panicButton()
 			os._exit(1)
+		elif nukeFlag == True:
+			input_file = open(nukeFile)
+			for i in input_file.readlines():
+				fileName = os.path.expanduser(i).strip('\n')
+				print(' [*] Attempting to nuke file: ' + str(fileName))
+				if not os.path.isfile(fileName):
+					print(' [-] Error: file does not exist. Skipping...')
+				else:
+					try:
+						os.remove(fileName)
+						print(' [+] ' + fileName + ' successfully removed.')
+					except:
+						print(' [-] Unable to remove file.')
+			panicButton()
+			os._exit(1)
 		else:
 			panicButton()
 			os._exit(1)
@@ -112,12 +127,14 @@ def main():
 	group = parser.add_mutually_exclusive_group()
 	group.add_argument('-d', '--decrypt', type=str, help='decrypt files from a list, requires directory and filename of list (e.g.: ./files.txt).')
 	group.add_argument('-e', '--encrypt', type=str, help='encrypt files from a list when watchdog executes, requires directory and filename of list (e.g., ./files.txt) - will ask for encryption key and then start watchdog.')
+	group.add_argument('-n', '--nuke', type=str, help='deletes files from a list, requires directory and filename of list (e.g., ./files.txt) - the nuclear option, for when you just want everything gone before shutdown.')
 	args = parser.parse_args()
-	global encFlag, userKey, encFile, decFile
+	global encFlag, userKey, encFile, decFile, nukeFlag, nukeFile
 	encFlag = False
-	if (args.decrypt == None) and (args.encrypt == None):
+	if (args.decrypt == None) and (args.encrypt == None) and (args.nuke == None):
 		encFlag = False
-		watchdog(encFlag)
+		nukeFlag = False
+		watchdog(encFlag, nukeFlag)
 	elif not args.decrypt == None:
 		decFile = os.path.expanduser(args.decrypt)
 		if not os.path.isfile(decFile):
@@ -126,7 +143,7 @@ def main():
 		else:
 			verifyKey = False
 			while verifyKey == False:
-				userKey = getpass(" [*] Enter key: ")
+				userKey = getpass(" [*] Enter 16-character key: ")
 				if (len(userKey) == 16):
 					verifyKey = True
 				else:
@@ -150,9 +167,10 @@ def main():
 		if not os.path.isfile(encFile):
 			print(' [-] File list to encrypt does not exist. Skipping encryption...')
 			encFlag = False
-			watchdog(encFlag)
+			nukeFlag = False
+			watchdog(encFlag, nukeFlag)
 		else:
-			print(' [*] Establishing key for file encryption.')
+			print(' [*] Establishing key for file encryption. Key entered must be 16 characters long.')
 			isSame = False
 			while isSame == False:
 				isSame = passPrompt()
@@ -161,7 +179,20 @@ def main():
 				else:
 					print(' [+] Key set.')
 			encFlag = True
-			watchdog(encFlag)
+			nukeFlag = False
+			watchdog(encFlag, nukeFlag)
+	elif not args.nuke == None:
+		nukeFile = os.path.expanduser(args.nuke)
+		if not os.path.isfile(nukeFile):
+			print(' [-] File list to nuke does not exist. Disarming nuclear option...')
+			encFlag = False
+			nukeFlag = False
+			watchdog(encFlag, nukeFlag)
+		else:
+			print(' [+] Nuclear option online - say Goodbye to Moscow.')
+			encFlag = False
+			nukeFlag = True
+			watchdog(encFlag, nukeFlag)
 
 if __name__ == '__main__':
 	cls()
