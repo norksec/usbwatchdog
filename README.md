@@ -10,13 +10,15 @@ sdmem (apt-get install secure-delete)
 
 Python packages:
 
+argparse
+
 xxtea
 
 pyfiglet
 
 pyudev
 
-pip3 install xxtea pyudev pyfiglet
+pip3 install xxtea pyudev pyfiglet argparse
 
 #Usage
 

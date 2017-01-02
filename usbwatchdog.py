@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
+import argparse
 import binascii
 from pyfiglet import Figlet
 from getpass import getpass
 import os
-import optparse
 import pyudev
-#from simplecrypt import encrypt, decrypt
 import subprocess
 import sys
 import xxtea
+
 
 def intro():
 	f = Figlet(font='graffiti')
@@ -108,20 +108,18 @@ def watchdog(encFlag):
 
 
 def main():
-	parser = optparse.OptionParser('%prog -e <file list to encrypt> / %prog -d <file list to decrypt>')
-	parser.add_option('-e', dest='encFile', type='string', help='Specify the list of files to encrypt. Will prompt for a key (must be 16 bytes), and encrypt the files before wiping RAM and rebooting if the watchdog is triggered.')
-	parser.add_option('-d', dest='decFile', type='string', help='Specify the list of files to decrypt. Will prompt for a key (must be 16 bytes) and decrypt the files. This mode does not start the watchdog.')
-	(options, args) = parser.parse_args()
+	parser = argparse.ArgumentParser(prog='usbwatchdog.py', description='monitor your usb ports for activity and wipe ram/shutdown if anything is plugged in or removed.')
+	group = parser.add_mutually_exclusive_group()
+	group.add_argument('-d', '--decrypt', type=str, help='decrypt files from a list, requires directory and filename of list (e.g.: ./files.txt).')
+	group.add_argument('-e', '--encrypt', type=str, help='encrypt files from a list when watchdog executes, requires directory and filename of list (e.g., ./files.txt) - will ask for encryption key and then start watchdog.')
+	args = parser.parse_args()
 	global encFlag, userKey, encFile, decFile
 	encFlag = False
-	if (options.encFile == None) and (options.decFile == None):
+	if (args.decrypt == None) and (args.encrypt == None):
 		encFlag = False
 		watchdog(encFlag)
-	elif (not options.encFile == None) and (not options.decFile == None):
-		print(' [-] Error: Can not select encrypt and decrypt at the same time. Closing...')
-		os._exit(1)
-	elif (options.encFile == None) and (not options.decFile == None):
-		decFile = options.decFile
+	elif not args.decrypt == None:
+		decFile = os.path.expanduser(args.decrypt)
 		if not os.path.isfile(decFile):
 			print(' [-] Error: File list to decrypt does not exist. Exiting...')
 			os._exit(1)
@@ -147,8 +145,8 @@ def main():
 						print(' [+] File successfully decrypted.')
 					except:
 						print(' [-] Error decrypting file. Is the key correct?')
-	elif (not options.encFile == None) and (options.decFile == None):
-		encFile = options.encFile
+	elif not args.encrypt == None:
+		encFile = os.path.expanduser(args.encrypt)
 		if not os.path.isfile(encFile):
 			print(' [-] File list to encrypt does not exist. Skipping encryption...')
 			encFlag = False
