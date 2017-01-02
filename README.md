@@ -12,7 +12,11 @@ Python packages:
 
 xxtea
 
-pip3 install xxtea
+pyfiglet
+
+pyudev
+
+pip3 install xxtea pyudev pyfiglet
 
 #Usage
 
