@@ -5,8 +5,16 @@ import os
 import subprocess
 from getpass import getpass
 
-import pyudev
-import xxtea
+try:
+	import pyudev
+except:
+	print(' [-] Requires pyudev - please install (pip3 install puyudev)')
+	exit(1)
+try:
+	import xxtea
+except:
+	print(' [-] Requires xxtea - please install (pip3 install pyudev)')
+	exit(1)
 
 
 def intro():
