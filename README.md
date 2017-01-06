@@ -14,11 +14,9 @@ argparse
 
 xxtea
 
-pyfiglet
-
 pyudev
 
-pip3 install xxtea pyudev pyfiglet argparse
+pip3 install xxtea pyudev argparse
 
 #Usage
 

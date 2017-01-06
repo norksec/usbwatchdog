@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 
 import argparse
-import binascii
-from pyfiglet import Figlet
-from getpass import getpass
 import os
-import pyudev
 import subprocess
-import sys
+from getpass import getpass
+
+import pyudev
 import xxtea
 
 
 def intro():
-	f = Figlet(font='graffiti')
-	print(f.renderText("NoRKSEC"))
+	print(""" _______        __________ ____  __.  _____________________________
+ \      \   ____\______   \    |/ _| /   _____/\_   _____/\_   ___ \\
+ /   |   \ /  _ \|       _/      <   \_____  \  |    __)_ /    \  \/
+/    |    (  <_> )    |   \    |  \  /        \ |        \\     \____
+\____|__  /\____/|____|_  /____|__ \/_______  //_______  / \______  /
+        \/              \/        \/        \/         \/         \/
+	\n""")
 	print('usbWatchdog.py - (c) 2017 NoRKSEC - no rights reserved\n')
 
 
